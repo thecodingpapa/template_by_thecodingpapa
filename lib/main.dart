@@ -34,14 +34,24 @@ class MyApp extends StatelessWidget {
         ),
         home: Consumer<PageNotifier>(
           builder: (context, pageNotifier, child) {
-            return Navigator(pages: [
-              MaterialPage(
-                  key: ValueKey(MyHome.pageName),
-                  child: MyHome(
-                      title: 'Flutter Demo Home Page')), // main home page
+            return Navigator(
+              pages: [
+                MaterialPage(
+                    key: ValueKey(MyHome.pageName),
+                    child: MyHome(
+                        title: 'Flutter Demo Home Page')), // main home page
 
-              if (pageNotifier.curPage == AuthPage.pageName) AuthPage()
-            ]);
+                if (pageNotifier.curPage == AuthPage.pageName) AuthPage()
+              ],
+              onPopPage: (route, result) {
+                if (!route.didPop(result)) {
+                  return false;
+                }
+
+                pageNotifier.goToMain();
+                return true;
+              },
+            );
           },
         ),
       ),
