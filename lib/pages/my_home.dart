@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:template_by_thecodingpapa/pages/auth_page.dart';
+import 'package:template_by_thecodingpapa/provider/page_notifier.dart';
 
 class MyHome extends StatefulWidget {
   MyHome({Key key, this.title}) : super(key: key);
@@ -25,6 +28,14 @@ class _MyHomeState extends State<MyHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                Provider.of<PageNotifier>(context, listen: false)
+                    .showPage(AuthPage.pageName);
+              })
+        ],
       ),
       body: Center(
         child: Column(
