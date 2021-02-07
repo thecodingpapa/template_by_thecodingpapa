@@ -18,133 +18,166 @@ class AuthPage extends Page {
 }
 
 class AuthWidget extends StatefulWidget {
+  AuthWidget({Key key}) : super(key: key);
+
   @override
   _AuthWidgetState createState() => _AuthWidgetState();
 }
 
 class _AuthWidgetState extends State<AuthWidget> {
-  bool isObscured =
-      true; //for enabling and disabling obscurity in password field
+  final radiusSize = 8.0;
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.black;
-    final lightColor = Colors.grey;
-    final primaryColor = Colors.white;
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     return Material(
-      child: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Image.asset('assets/image.png'),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: AssetImage('assets/image.gif'),
+          fit: BoxFit.cover,
+          // colorFilter: ColorFilter.mode(
+          //     Colors.black.withOpacity(.5), BlendMode.darken)
+        )),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Container(
+            padding: EdgeInsets.all(16),
+            child: Form(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                        color: color,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Please fill in all fields',
-                    style: TextStyle(
-                        color: lightColor[400],
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 20),
-                  TextField(
-                      style: TextStyle(fontSize: 18),
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: lightColor,
-                          ),
-                          labelText: 'Email Address',
-                          labelStyle:
-                              TextStyle(color: lightColor, fontSize: 16))),
-                  SizedBox(height: 20),
-                  TextField(
-                      style: TextStyle(fontSize: 18),
-                      obscureText: isObscured,
-                      decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.lock_outline,
-                            color: lightColor,
-                          ),
-                          suffixIcon: IconButton(
-                              icon: isObscured
-                                  ? Icon(Icons.visibility_off,
-                                      color: lightColor)
-                                  : Icon(Icons.visibility, color: lightColor),
-                              onPressed: () {
-                                setState(() {
-                                  isObscured = !isObscured;
-                                });
-                              }),
-                          labelText: 'Password',
-                          labelStyle:
-                              TextStyle(color: lightColor, fontSize: 16))),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {},
-                        child: Text('Forgot password?',
-                            style: TextStyle(
-                                fontSize: 16, color: lightColor[400])),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Container(
-                    height: 50,
-                    width: width,
-                    child: FlatButton(
-                        splashColor: lightColor,
-                        color: color,
-                        onPressed: () {
-                          Provider.of<PageNotifier>(context, listen: false)
-                              .goToMain();
-                        },
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor),
-                        )),
-                  ),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Don't have an account?",
-                          style:
-                              TextStyle(color: lightColor[400], fontSize: 14)),
-                      SizedBox(width: 5),
-                      InkWell(
-                        onTap: () {},
-                        child: Text("Sign Up",
-                            style: TextStyle(
-                                color: color,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Image.asset(
+                        'assets/logo.png',
+                        scale: 1.1,
                       ),
+                    ),
+                  ),
+                  ButtonBar(
+                    children: [_loginTabButton(context), _registerTabButton()],
+                  ),
+                  _email(),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  _password(),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  _loginButton(),
+                  Divider(
+                    height: 50,
+                    thickness: 1,
+                    color: Colors.white54,
+                    indent: 16,
+                    endIndent: 16,
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                          icon: ImageIcon(
+                              AssetImage('assets/icons8-google-48.png')),
+                          onPressed: () {}),
+                      IconButton(
+                          icon: ImageIcon(
+                              AssetImage('assets/icons8-facebook-48.png')),
+                          onPressed: () {}),
+                      IconButton(
+                          icon: ImageIcon(
+                              AssetImage('assets/icons8-apple-logo-48.png')),
+                          onPressed: () {}),
                     ],
                   )
                 ],
               ),
             ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  FlatButton _registerTabButton() {
+    return FlatButton(
+      onPressed: () {},
+      color: Colors.transparent,
+      textColor: Colors.black87,
+      child: Text('Register',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+    );
+  }
+
+  FlatButton _loginTabButton(BuildContext context) {
+    return FlatButton(
+      onPressed: () {},
+      color: Colors.transparent,
+      textColor: Colors.black87,
+      child: Text('Login',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+    );
+  }
+
+  TextFormField _email() {
+    return TextFormField(
+      cursorColor: Colors.white,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: 'Email Address',
+        hintStyle: TextStyle(
+          color: Colors.white54,
+        ),
+        filled: true,
+        fillColor: Colors.black26,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusSize),
+        ),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radiusSize),
+            borderSide: BorderSide(color: Colors.transparent, width: 0)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radiusSize),
+            borderSide: BorderSide(color: Colors.transparent, width: 0)),
+      ),
+    );
+  }
+
+  TextFormField _password() {
+    return TextFormField(
+      cursorColor: Colors.white,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: 'Password',
+        hintStyle: TextStyle(
+          color: Colors.white54,
+        ),
+        filled: true,
+        fillColor: Colors.black26,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusSize),
+        ),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radiusSize),
+            borderSide: BorderSide(color: Colors.transparent, width: 0)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radiusSize),
+            borderSide: BorderSide(color: Colors.transparent, width: 0)),
+      ),
+    );
+  }
+
+  Widget _loginButton() {
+    return FlatButton(
+      onPressed: () {},
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusSize)),
+      padding: EdgeInsets.all(16),
+      color: Colors.white54,
+      textColor: Colors.black87,
+      child: Text(
+        'Login',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
     );
   }
