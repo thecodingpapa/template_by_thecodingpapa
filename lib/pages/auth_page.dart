@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:template_by_thecodingpapa/provider/page_notifier.dart';
 
 class AuthPage extends Page {
   static final pageName = "AuthPage";
@@ -63,7 +65,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                   SizedBox(
                     height: 24,
                   ),
-                  _loginButton(),
+                  _loginButton(context),
                   Divider(
                     height: 50,
                     thickness: 1,
@@ -76,13 +78,22 @@ class _AuthWidgetState extends State<AuthWidget> {
                     children: [
                       _socialLogin(
                           assetLoction: 'assets/icons8-google-48.png',
-                          onPress: () {}),
+                          onPress: () {
+                            Provider.of<PageNotifier>(context, listen: false)
+                                .goToMain();
+                          }),
                       _socialLogin(
                           assetLoction: 'assets/icons8-facebook-48.png',
-                          onPress: () {}),
+                          onPress: () {
+                            Provider.of<PageNotifier>(context, listen: false)
+                                .goToMain();
+                          }),
                       _socialLogin(
                           assetLoction: 'assets/icons8-apple-logo-48.png',
-                          onPress: () {}),
+                          onPress: () {
+                            Provider.of<PageNotifier>(context, listen: false)
+                                .goToMain();
+                          }),
                     ],
                   )
                 ],
@@ -173,9 +184,11 @@ class _AuthWidgetState extends State<AuthWidget> {
     );
   }
 
-  Widget _loginButton() {
+  Widget _loginButton(BuildContext context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        Provider.of<PageNotifier>(context, listen: false).goToMain();
+      },
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusSize)),
       padding: EdgeInsets.all(16),
