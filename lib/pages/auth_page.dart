@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:template_by_thecodingpapa/provider/page_notifier.dart';
 
 class AuthPage extends Page {
   static final pageName = "AuthPage";
@@ -76,18 +74,15 @@ class _AuthWidgetState extends State<AuthWidget> {
                   ButtonBar(
                     alignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                          icon: ImageIcon(
-                              AssetImage('assets/icons8-google-48.png')),
-                          onPressed: () {}),
-                      IconButton(
-                          icon: ImageIcon(
-                              AssetImage('assets/icons8-facebook-48.png')),
-                          onPressed: () {}),
-                      IconButton(
-                          icon: ImageIcon(
-                              AssetImage('assets/icons8-apple-logo-48.png')),
-                          onPressed: () {}),
+                      _socialLogin(
+                          assetLoction: 'assets/icons8-google-48.png',
+                          onPress: () {}),
+                      _socialLogin(
+                          assetLoction: 'assets/icons8-facebook-48.png',
+                          onPress: () {}),
+                      _socialLogin(
+                          assetLoction: 'assets/icons8-apple-logo-48.png',
+                          onPress: () {}),
                     ],
                   )
                 ],
@@ -96,6 +91,17 @@ class _AuthWidgetState extends State<AuthWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Container _socialLogin({String assetLoction, Function onPress}) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25), color: Colors.white54),
+      child: IconButton(
+          icon: ImageIcon(AssetImage(assetLoction)), onPressed: onPress),
     );
   }
 
