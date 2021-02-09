@@ -26,6 +26,14 @@ class AuthWidget extends StatefulWidget {
 
 class _AuthWidgetState extends State<AuthWidget> {
   final radiusSize = 8.0;
+  bool isRegister = false;
+  final _duration = Duration(milliseconds: 200);
+  final _curve = Curves.fastOutSlowIn;
+
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,30 +46,48 @@ class _AuthWidgetState extends State<AuthWidget> {
           // colorFilter: ColorFilter.mode(
           //     Colors.black.withOpacity(.5), BlendMode.darken)
         )),
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Container(
-            padding: EdgeInsets.all(16),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Form(
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.all(16),
+                reverse: true,
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
+                  CircleAvatar(
+                    backgroundColor: Colors.white54,
+                    radius: 36,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
                       child: Image.asset(
                         'assets/logo.png',
                         scale: 1.1,
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 60,
+                  ),
                   ButtonBar(
                     children: [_loginTabButton(context), _registerTabButton()],
                   ),
-                  _email(),
+                  _textFormField(_emailController, 'Email Address'),
                   SizedBox(
                     height: 8,
                   ),
-                  _password(),
+                  _textFormField(_passwordController, 'Password'),
+                  AnimatedContainer(
+                    duration: _duration,
+                    height: isRegister ? 8 : 0,
+                    curve: _curve,
+                  ),
+                  AnimatedContainer(
+                      duration: _duration,
+                      height: isRegister ? 60 : 0,
+                      curve: _curve,
+                      child: _textFormField(
+                          _confirmController, 'Confirm Password')),
                   SizedBox(
                     height: 24,
                   ),
@@ -96,7 +122,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                           }),
                     ],
                   )
-                ],
+                ].reversed.toList(),
               ),
             ),
           ),
@@ -118,59 +144,65 @@ class _AuthWidgetState extends State<AuthWidget> {
 
   FlatButton _registerTabButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        setState(() {
+          isRegister = true;
+        });
+      },
       color: Colors.transparent,
-      textColor: Colors.black87,
+      textColor: isRegister ? Colors.black87 : Colors.black54,
       child: Text('Register',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: isRegister ? FontWeight.w600 : FontWeight.w500)),
     );
   }
 
   FlatButton _loginTabButton(BuildContext context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        setState(() {
+          isRegister = false;
+        });
+      },
       color: Colors.transparent,
-      textColor: Colors.black87,
+      textColor: isRegister ? Colors.black54 : Colors.black87,
       child: Text('Login',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: isRegister ? FontWeight.w500 : FontWeight.w600)),
     );
   }
 
-  TextFormField _email() {
+  TextFormField _textFormField(TextEditingController controller, String hint) {
     return TextFormField(
+      controller: controller,
       cursorColor: Colors.white,
+      obscureText: controller != _emailController,
       style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: 'Email Address',
-        hintStyle: TextStyle(
-          color: Colors.white54,
-        ),
-        filled: true,
-        fillColor: Colors.black26,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radiusSize),
-        ),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radiusSize),
-            borderSide: BorderSide(color: Colors.transparent, width: 0)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radiusSize),
-            borderSide: BorderSide(color: Colors.transparent, width: 0)),
-      ),
-    );
-  }
+      validator: (text) {
+        if (controller != _confirmController && (text == null || text.isEmpty))
+          return "Please input something!!";
 
-  TextFormField _password() {
-    return TextFormField(
-      cursorColor: Colors.white,
-      style: TextStyle(color: Colors.white),
+        if (controller == _confirmController && isRegister) {
+          if ((text == null && text.isEmpty) ||
+              text != _passwordController.text)
+            return "Password you input does not match.";
+        }
+
+        return null;
+      },
       decoration: InputDecoration(
-        hintText: 'Password',
-        hintStyle: TextStyle(
-          color: Colors.white54,
+        labelStyle: TextStyle(
+          color: Colors.white,
         ),
+        labelText: hint,
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radiusSize),
+            borderSide: BorderSide(color: Colors.black, width: 3)),
+        errorStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         filled: true,
-        fillColor: Colors.black26,
+        fillColor: Colors.black45,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusSize),
         ),
@@ -187,7 +219,8 @@ class _AuthWidgetState extends State<AuthWidget> {
   Widget _loginButton(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        Provider.of<PageNotifier>(context, listen: false).goToMain();
+        if (_formKey.currentState.validate())
+          Provider.of<PageNotifier>(context, listen: false).goToMain();
       },
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusSize)),
@@ -195,7 +228,7 @@ class _AuthWidgetState extends State<AuthWidget> {
       color: Colors.white54,
       textColor: Colors.black87,
       child: Text(
-        'Login',
+        isRegister ? 'Register' : 'Login',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
     );
